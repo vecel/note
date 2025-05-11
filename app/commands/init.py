@@ -6,9 +6,7 @@ for storing notes. It typically creates a `.notes` file in the current
 directory.
 """
 import os
-
 import typer
-from typing_extensions import Annotated
 
 from app import NOTES_FILENAME
 
