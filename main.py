@@ -1,7 +1,4 @@
-import typer
-
-def main(name: str):
-    print(f"Hello {name}")
+from app.cli import app
 
 if __name__ == "__main__":
-    typer.run(main)
+    app()
