@@ -1,5 +1,7 @@
 .venv
 __pycache__
 
+dist
+
 # Notes repository
 .notes
