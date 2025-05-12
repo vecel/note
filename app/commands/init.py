@@ -18,7 +18,8 @@ def init():
     Initializes empty notes repository in working directory.
     """
     try:
-        with open(".notes", "x") as _:
+        with open(NOTES_FILENAME, "x") as _:
             print("Initialized empty notes repository.")
     except FileExistsError:
-        print(f"Notes repository already initialized in {os.getcwd()}/{NOTES_FILENAME}")
+        path = os.path.join(os.getcwd(), NOTES_FILENAME)
+        print(f"Notes repository already initialized in {path}")

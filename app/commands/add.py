@@ -6,6 +6,8 @@ This module defines the `add` command which saves note to repository.
 import typer
 from typing_extensions import Annotated
 
+from app import NOTES_FILENAME
+
 app = typer.Typer()
 
 @app.command()
