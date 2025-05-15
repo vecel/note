@@ -6,7 +6,8 @@ This module defines the `add` command which saves note to repository.
 import typer
 from typing_extensions import Annotated
 
-from app import NOTES_FILENAME
+from app.core.repository import add_note
+from app.core.errors import NoteAppError
 
 app = typer.Typer()
 
@@ -36,4 +37,8 @@ def add(
     """
     # TODO check whether .notes exists (if not -> return code =/= 0 and print hint to use `note init`)
     # TODO create note object and save it to database
-    print(f"{content} {tags}")
+
+    try:
+        add_note(content)
+    except NoteAppError as error:
+        print(error)

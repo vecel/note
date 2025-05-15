@@ -5,10 +5,9 @@ This module defines the `init` command which prepares the environment
 for storing notes. It typically creates a `.notes` file in the current 
 directory.
 """
-import os
 import typer
 
-from app import NOTES_FILENAME
+from app.core.repository import create_repository
 
 app = typer.Typer()
 
@@ -18,8 +17,8 @@ def init():
     Initializes empty notes repository in working directory.
     """
     try:
-        with open(NOTES_FILENAME, "x") as _:
-            print("Initialized empty notes repository.")
-    except FileExistsError:
-        path = os.path.join(os.getcwd(), NOTES_FILENAME)
-        print(f"Notes repository already initialized in {path}")
+        repository = create_repository()
+        print(f"Initialized empty notes repository in {repository}")
+    except FileExistsError as error:
+        print(error)
+    
