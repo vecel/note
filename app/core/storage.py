@@ -24,7 +24,8 @@ def create_repository():
         Path: Absolute path to the newly created repository file.
     """
     try:
-        with repository.open("x") as _:
+        with repository.open("x") as file:
+            json.dump({}, file)
             return repository.absolute()
     except FileExistsError:
         raise FileExistsError(f"Notes repository already initialized in {repository.absolute()}")
@@ -42,9 +43,6 @@ def load_repository():
     """
     if not repository.exists():
         raise RepositoryDoesNotExistError(f"Notes repository does not exist. Run `note init` to initialize repository.")
-    
-    if repository.stat().st_size == 0:
-        return {}
     
     try:
         with open(REPOSITORY_FILENAME, "r") as file:

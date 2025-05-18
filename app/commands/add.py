@@ -6,8 +6,10 @@ This module defines the `add` command which saves note to repository.
 import typer
 from typing_extensions import Annotated
 
+from app.core.models import Note
 from app.core.repository import add_note
 from app.core.errors import NoteAppError
+from app.core.utils import parse_tags
 
 app = typer.Typer()
 
@@ -32,13 +34,13 @@ def add(
     """
     Adds a new note with specified CONTENT and optional TAGS.
 
-    --tags should be a string of comma separated values associated to the
+    TAGS should be a string of comma separated values associated to the
     note (e.g. "personal,todo"). 
     """
-    # TODO check whether .notes exists (if not -> return code =/= 0 and print hint to use `note init`)
-    # TODO create note object and save it to database
 
     try:
-        add_note(content)
+        tags_list = parse_tags(tags) if tags is not None else None    
+        note = Note(content, tags_list)
+        add_note(note)
     except NoteAppError as error:
         print(error)
