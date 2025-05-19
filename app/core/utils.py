@@ -1,6 +1,11 @@
 import re
 
+from rich import print
+from rich.table import Table
+from rich.text import Text
+
 from app.core.errors import NoteAppError
+from app.core.models import Note
 
 def parse_tags(tags: str):
     result = re.match("^[a-zA-Z0-9]+(,[a-zA-Z0-9]+)*$", tags)
@@ -9,3 +14,21 @@ def parse_tags(tags: str):
         "should be comma separated list of strings containing only " \
         "letters and numbers.") # TODO change to custom exception
     return tags.split(",")
+
+def print_notes(notes: list[Note]):
+    table = Table(title="Your Notes")
+    table.add_column("ID", width=6)
+    table.add_column("Content", style="white", width=60)
+    table.add_column("Tags", style="violet bold", width=16)
+
+    for note in notes:
+        id, content, tags = note.id, note.content, note.tags
+        tags = ' '.join(f"#{tag}" for tag in tags) if tags is not None else ''
+        table.add_row(str(id), content, str(tags))
+    
+    print(table)
+
+def print_tags(tags: list[str]):
+    tags_list = ' '.join(f"#{tag}" for tag in tags)
+    tags_list = Text(tags_list, style="violet bold")
+    print(tags_list)

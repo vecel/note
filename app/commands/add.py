@@ -1,5 +1,5 @@
 """
-Command for adding notes for the repository.
+Add command for the note application.
 
 This module defines the `add` command which saves note to repository.
 """
@@ -40,7 +40,7 @@ def add(
 
     try:
         tags_list = parse_tags(tags) if tags is not None else None    
-        note = Note(content, tags_list)
+        note = Note.create(content, tags_list)
         add_note(note)
     except NoteAppError as error:
         print(error)

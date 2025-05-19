@@ -13,6 +13,7 @@ import typer
 from app.callback import callback
 from app.commands.init import app as init_app
 from app.commands.add import app as add_app
+from app.commands.list import app as list_app
 
 app = typer.Typer(
     help="A simple CLI to manage notes.",
@@ -25,3 +26,4 @@ app = typer.Typer(
 
 app.add_typer(init_app)
 app.add_typer(add_app)
+app.add_typer(list_app)
