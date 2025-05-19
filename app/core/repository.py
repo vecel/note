@@ -17,6 +17,20 @@ def create_repository():
     return storage.create_repository()
 
 def add_note(note: Note):
+    """
+    Adds a new note to the notes repository.
+
+    This function loads the existing repository, verifies that it contains a
+    'notes' field, appends the new note, and saves the updated repository 
+    back to disk.
+
+    Args:
+        note (Note): The Note object to be added to the repository.
+
+    Raises:
+        RepositoryCorruptedError: If the loaded repository does not contain a 'notes' field,
+                                  indicating it is improperly structured or corrupted.
+    """
     repository = storage.load_repository()
     
     if "notes" not in repository.keys():
