@@ -8,7 +8,7 @@ repository where notes are stored.
 import json
 from pathlib import Path
 
-from app.core import REPOSITORY_FILENAME
+from app.core import REPOSITORY_FILENAME, REPOSITORY_TEMPLATE
 from app.core.errors import RepositoryDoesNotExistError, RepositoryCorruptedError
 
 repository = Path() / REPOSITORY_FILENAME
@@ -25,7 +25,7 @@ def create_repository():
     """
     try:
         with repository.open("x") as file:
-            json.dump({}, file)
+            json.dump(REPOSITORY_TEMPLATE, file)
             return repository.absolute()
     except FileExistsError:
         raise FileExistsError(f"Notes repository already initialized in {repository.absolute()}")
@@ -65,3 +65,5 @@ def save_repository(notes_repository: dict):
     
     with repository.open("w") as file:
         json.dump(notes_repository, file)
+
+# TODO Consider using with clause to work with load/save repository
