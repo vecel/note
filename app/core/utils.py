@@ -21,10 +21,10 @@ def print_notes(notes: list[Note]):
     table.add_column("Content", style="white", width=60)
     table.add_column("Tags", style="violet bold", width=16)
 
-    for note in notes:
-        id, content, tags = note.id, note.content, note.tags
+    for idx, note in enumerate(notes):
+        content, tags = note.content, note.tags
         tags = ' '.join(f"#{tag}" for tag in tags) if tags is not None else ''
-        table.add_row(str(id), content, str(tags))
+        table.add_row(str(idx + 1), content, str(tags))
     
     print(table)
 

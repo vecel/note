@@ -8,7 +8,7 @@ all notes in the repository are listed.
 import typer
 from typing_extensions import Annotated
 
-from app.core.errors import RepositoryDoesNotExistError
+from app.core.errors import NoteAppError
 from app.core.repository import list_notes, list_tags
 
 app = typer.Typer()
@@ -45,14 +45,5 @@ def list(
             list_notes(tag_filter)
         else:
             list_tags()
-    except RepositoryDoesNotExistError as error:
+    except NoteAppError as error:
         print(error)
-
-    # TODO add tests for 
-    # list in non initialized repo
-    # list for repo with no notes
-    # list for repo with notes
-    # list -T for repo with notes without tags
-    # list -T for repo with notes with tags
-    # list -t for repo with notes with given tag
-    # list -t for repo with notes without given tag

@@ -16,3 +16,8 @@ class RepositoryCorruptedError(NoteAppError):
     content (e.g. malformed JSON).
     """
     pass
+
+class NotesNotFoundError(NoteAppError):
+    """Raised when no notes are found in the repository, either because it 
+    is empty or no notes match the filter."""
+    pass

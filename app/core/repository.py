@@ -4,7 +4,7 @@ and adding notes. This module separates core logic from low-level file storage o
 """
 from app.core import storage
 from app.core.models import Note
-from app.core.errors import RepositoryCorruptedError
+from app.core.errors import RepositoryCorruptedError, NotesNotFoundError
 from app.core.utils import print_notes, print_tags
 
 def create_repository():
@@ -44,15 +44,14 @@ def list_notes(tag_filter: list[str] | None = None):
     notes_list = repository["notes"]
 
     if not notes_list:
-        print("Repository is empty. Run `note add` to add a note.") # FIXME consider changing to exception
-        return
+        raise NotesNotFoundError("Repository is empty. Run `note add` to add a note.")
     
     notes = [Note(**note) for note in notes_list]
     if tag_filter is not None:
         notes = [note for note in notes if note.tags and set(note.tags) & set(tag_filter)]
     if not notes:
-        print("There are no notes matching given filter in repository.") # FIXME add filter to print statement
-        return
+        # TODO add filter to print statement
+        raise NotesNotFoundError("There are no notes matching given tag filter in repository.")
     print_notes(notes)
 
 def list_tags():
@@ -61,6 +60,5 @@ def list_tags():
     tags = [note["tags"] for note in notes_list if note["tags"]]
     tags = [tag for group in tags for tag in group]
     if not tags:
-        print("There are no notes with any tag in the repository")
-        return
+        raise NotesNotFoundError("There are no tagged notes in the repository.")
     print_tags(tags)

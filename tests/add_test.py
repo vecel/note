@@ -27,7 +27,7 @@ def test_add(initialized_repo):
     
     note = repository["notes"][0]
 
-    assert all(key in note.keys() for key in ("id", "content", "tags"))
+    assert all(key in note.keys() for key in ("content", "tags", "status"))
     assert "New note." == note["content"]
 
 def test_add_with_tags(initialized_repo):
@@ -39,7 +39,7 @@ def test_add_with_tags(initialized_repo):
     
     note = repository["notes"][0]
 
-    assert all(key in note.keys() for key in ("id", "content", "tags"))
+    assert all(key in note.keys() for key in ("content", "tags", "status"))
     assert ["awesome", "cool"] == note["tags"] 
 
 def test_add_repository_not_initialized(tmp_path):
