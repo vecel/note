@@ -42,6 +42,7 @@ def list(
     """
     try:
         if not tags_only:
+            # TODO keep original id when listing with filter
             list_notes(tag_filter)
         else:
             list_tags()
