@@ -12,3 +12,7 @@ class Note:
 
     def to_dict(self):
         return asdict(self)
+
+@dataclass
+class IndexedNote(Note):
+    idx: int

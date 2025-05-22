@@ -5,7 +5,7 @@ from rich.table import Table
 from rich.text import Text
 
 from app.core.errors import NoteAppError
-from app.core.models import Note
+from app.core.models import IndexedNote
 
 def parse_tags(tags: str):
     result = re.match("^[a-zA-Z0-9]+(,[a-zA-Z0-9]+)*$", tags)
@@ -15,14 +15,14 @@ def parse_tags(tags: str):
         "letters and numbers.") # TODO change to custom exception
     return tags.split(",")
 
-def print_notes(notes: list[tuple[int, Note]]):
+def print_notes(notes: list[IndexedNote]):
     table = Table(title="Your Notes")
     table.add_column("ID", width=6)
     table.add_column("Content", style="white", width=60)
     table.add_column("Tags", style="violet bold", width=16)
 
-    for idx, note in notes:
-        content, tags = note.content, note.tags
+    for note in notes:
+        idx, content, tags = note.idx, note.content, note.tags
         tags = ' '.join(f"#{tag}" for tag in tags) if tags is not None else ''
         table.add_row(str(idx + 1), content, str(tags))
     

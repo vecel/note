@@ -3,7 +3,7 @@ Provides high-level operations on the note repository, such as creating the repo
 and adding notes. This module separates core logic from low-level file storage operations.
 """
 from app.core import storage
-from app.core.models import Note
+from app.core.models import Note, IndexedNote
 from app.core.errors import RepositoryCorruptedError, NotesNotFoundError
 from app.core.utils import print_notes, print_tags
 
@@ -46,10 +46,10 @@ def list_notes(tag_filter: list[str] | None = None):
     if not notes_list:
         raise NotesNotFoundError("Repository is empty. Run `note add` to add a note.")
     
-    notes = [(idx, Note(**note)) for idx, note in enumerate(notes_list)]
+    notes = [IndexedNote(idx=idx, **note) for idx, note in enumerate(notes_list)]
     
     if tag_filter is not None:
-        notes = [(idx, note) for idx, note in notes if note.tags and set(note.tags) & set(tag_filter)]
+        notes = [note for note in notes if note.tags and set(note.tags) & set(tag_filter)]
     if not notes:
         # TODO add filter to print statement
         raise NotesNotFoundError("There are no notes matching given tag filter in repository.")
