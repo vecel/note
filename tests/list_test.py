@@ -1,7 +1,5 @@
 import os
 
-from app import __app_name__, __version__
-
 def test_list(repo_with_notes, runner, test_app):
     result = runner.invoke(test_app, ["list"])
 

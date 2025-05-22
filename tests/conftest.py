@@ -1,29 +1,83 @@
 import os
+import json
+import copy
 
 import pytest
 from typer.testing import CliRunner
 
 from app.cli import app
+from app.core import REPOSITORY_FILENAME, REPOSITORY_TEMPLATE
+from app.core.models import Note
+
+# FIXME change almost all tests to unit tests without coupling commands with each other
+# TODO create fixtures for creating temporary repository with some content (manually)
 
 @pytest.fixture
 def runner() -> CliRunner:
+    """Provides a Typer CliRunner."""
     return CliRunner()
 
 @pytest.fixture
 def test_app():
+    """Provides the Typer app instance."""
     return app
 
 @pytest.fixture
-def repo_initialized(tmp_path, runner, test_app):
+def repo_path(tmp_path):
     os.chdir(tmp_path)
-    runner.invoke(test_app, ["init"])
+    return tmp_path / REPOSITORY_FILENAME
 
 @pytest.fixture
-def repo_with_notes(repo_initialized, runner, test_app):
-    runner.invoke(test_app, ["add", "New note.", "-t", "mytag"])
-    runner.invoke(test_app, ["add", "Another note.", "-t", "mytag,awesome"])
+def repo_initialized(repo_path):
+    """
+    Initializes empty repository in temporary file.
+    
+    Returns:
+        Path: A path to repository.
+    """
+    with open(repo_path, "w") as file:
+        json.dump(REPOSITORY_TEMPLATE, file)
+
+    return repo_path
 
 @pytest.fixture
-def repo_with_untagged_notes(repo_initialized, runner, test_app):
-    runner.invoke(test_app, ["add", "New note."])
-    runner.invoke(test_app, ["add", "Another one."])
+def repo_with_notes(repo_path):
+    """
+    Initializes repository with sample notes in temporary file.
+    
+    Returns:
+        Path: A path to repository.
+    """
+    notes = [
+        Note.create("New note.", ["mytag"]),
+        Note.create("Another note.", ["mytag", "awesome"])
+    ]
+
+    repo = copy.deepcopy(REPOSITORY_TEMPLATE)
+    repo["notes"] = [note.to_dict() for note in notes]
+
+    with open(repo_path, "w") as file:
+        json.dump(repo, file)
+
+    return repo_path
+
+@pytest.fixture
+def repo_with_untagged_notes(repo_path):
+    """
+    Initializes repository with sample, untagged notes in temporary file.
+    
+    Returns:
+        Path: A path to repository.
+    """
+    notes = [
+        Note.create("New note.", []),
+        Note.create("Another note.", [])
+    ]
+
+    repo = copy.deepcopy(REPOSITORY_TEMPLATE)
+    repo["notes"] = [note.to_dict() for note in notes]
+
+    with open(repo_path, "w") as file:
+        json.dump(repo, file)
+
+    return repo_path

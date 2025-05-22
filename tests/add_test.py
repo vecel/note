@@ -1,25 +1,9 @@
 import os
 import json
 
-import pytest
-from typer.testing import CliRunner
-
-from app import __app_name__, __version__
-from app.cli import app
-from app.core import REPOSITORY_FILENAME
-
-runner = CliRunner()
-
-@pytest.fixture
-def initialized_repo(tmp_path):
-    os.chdir(tmp_path)
-    notes_file = tmp_path / REPOSITORY_FILENAME
-    runner.invoke(app, ["init"])
-    return notes_file
-
-def test_add(initialized_repo):
-    result = runner.invoke(app, ["add", "New note."])
-    with open(initialized_repo, "r") as file:
+def test_add(repo_initialized, runner, test_app):
+    result = runner.invoke(test_app, ["add", "New note."])
+    with open(repo_initialized, "r") as file:
         repository = json.load(file)
 
     assert result.exit_code == 0
@@ -30,9 +14,9 @@ def test_add(initialized_repo):
     assert all(key in note.keys() for key in ("content", "tags", "status"))
     assert "New note." == note["content"]
 
-def test_add_with_tags(initialized_repo):
-    result = runner.invoke(app, ["add", "New note.", "-t", "awesome,cool"])
-    with open(initialized_repo, "r") as file:
+def test_add_with_tags(repo_initialized, runner, test_app):
+    result = runner.invoke(test_app, ["add", "New note.", "-t", "awesome,cool"])
+    with open(repo_initialized, "r") as file:
         repository = json.load(file)
 
     assert result.exit_code == 0
@@ -42,9 +26,9 @@ def test_add_with_tags(initialized_repo):
     assert all(key in note.keys() for key in ("content", "tags", "status"))
     assert ["awesome", "cool"] == note["tags"] 
 
-def test_add_repository_not_initialized(tmp_path):
+def test_add_repository_not_initialized(tmp_path, runner, test_app):
     os.chdir(tmp_path)
-    result = runner.invoke(app, ["add", "New note."])
+    result = runner.invoke(test_app, ["add", "New note."])
 
     assert result.exit_code == 0
     assert f"Notes repository does not exist. Run `note init` to initialize repository." in result.stdout
