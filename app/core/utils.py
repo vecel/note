@@ -7,6 +7,8 @@ from rich.text import Text
 from app.core.errors import NoteAppError
 from app.core.models import IndexedNote
 
+DASH_TEXT = Text("-", style="italic black")
+
 def parse_tags(tags: str):
     result = re.match("^[a-zA-Z0-9]+(,[a-zA-Z0-9]+)*$", tags)
     if result is None:
@@ -18,17 +20,19 @@ def parse_tags(tags: str):
 def print_notes(notes: list[IndexedNote]):
     table = Table(title="Your Notes")
     table.add_column("ID", width=6)
-    table.add_column("Content", style="white", width=60)
-    table.add_column("Tags", style="violet bold", width=16)
+    table.add_column("Content", width=60)
+    table.add_column("Tags", style="violet", width=16)
+    table.add_column("Status", width=16)
 
     for note in notes:
-        idx, content, tags = note.idx, note.content, note.tags
-        tags = ' '.join(f"#{tag}" for tag in tags) if tags is not None else ''
-        table.add_row(str(idx + 1), content, str(tags))
+        idx, content, tags, status = note.idx, note.content, note.tags, note.status
+        tags = " ".join(f"#{tag}" for tag in tags) if tags is not None else DASH_TEXT
+        status = Text(status, style="green bold") if status is not None else DASH_TEXT
+        table.add_row(str(idx + 1), content, tags, status)
     
     print(table)
 
 def print_tags(tags: list[str]):
-    tags_list = ' '.join(f"#{tag}" for tag in tags)
-    tags_list = Text(tags_list, style="violet bold")
+    tags_list = " ".join(f"#{tag}" for tag in tags)
+    tags_list = Text(tags_list, style="bold violet")
     print(tags_list)
