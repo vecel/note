@@ -46,9 +46,10 @@ def list_notes(tag_filter: list[str] | None = None):
     if not notes_list:
         raise NotesNotFoundError("Repository is empty. Run `note add` to add a note.")
     
-    notes = [Note(**note) for note in notes_list]
+    notes = [(idx, Note(**note)) for idx, note in enumerate(notes_list)]
+    
     if tag_filter is not None:
-        notes = [note for note in notes if note.tags and set(note.tags) & set(tag_filter)]
+        notes = [(idx, note) for idx, note in notes if note.tags and set(note.tags) & set(tag_filter)]
     if not notes:
         # TODO add filter to print statement
         raise NotesNotFoundError("There are no notes matching given tag filter in repository.")
@@ -62,3 +63,11 @@ def list_tags():
     if not tags:
         raise NotesNotFoundError("There are no tagged notes in the repository.")
     print_tags(tags)
+
+def delete_note(id: int):
+    repository = storage.load_repository()
+    notes_number = len(repository["notes"])
+    if not 1 <= id <= notes_number:
+        raise NotesNotFoundError(f"There is no note with id {id} in the repository. Run `note list` to see all notes.")
+    repository["notes"].pop(id - 1)
+    storage.save_repository(repository)
