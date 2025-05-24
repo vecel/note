@@ -34,7 +34,7 @@ def list(
     ] = False
 ):
     """
-    Lists notes stored in the repository.
+    List notes stored in the repository.
 
     If no filter is provided, all notes will be displayed. Use the `--tag` option
     to filter notes by one or more tags. Only notes that have at least one of the 

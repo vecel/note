@@ -32,7 +32,7 @@ def add(
     ] = None
 ):
     """
-    Adds a new note with specified CONTENT and optional TAGS.
+    Add a new note with specified CONTENT and optional TAGS.
 
     TAGS should be a string of comma separated values associated to the
     note (e.g. "personal,todo"). 

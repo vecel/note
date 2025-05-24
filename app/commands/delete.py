@@ -21,7 +21,7 @@ def delete(
     ]
 ):
     """
-    Deletes note with specified ID.
+    Delete note with specified ID.
     """
     try:
         delete_note(id)

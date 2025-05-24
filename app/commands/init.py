@@ -14,7 +14,7 @@ app = typer.Typer()
 @app.command()
 def init():
     """
-    Initializes empty notes repository in working directory.
+    Initialize empty notes repository in working directory.
     """
     try:
         repository = create_repository()
