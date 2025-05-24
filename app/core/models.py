@@ -16,3 +16,14 @@ class Note:
 @dataclass
 class IndexedNote(Note):
     idx: int
+
+@dataclass
+class Status:
+    name: str
+    style: str
+    priority: int
+
+    @staticmethod
+    def create(name: str, style: str | None, priority: int):
+        style = style if style is not None else "white"
+        return Status(name, style, priority)

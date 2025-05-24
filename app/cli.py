@@ -15,6 +15,7 @@ from app.commands.init import app as init_app
 from app.commands.add import app as add_app
 from app.commands.list import app as list_app
 from app.commands.delete import app as delete_app
+from app.commands.config import app as config_app
 
 app = typer.Typer(
     help="A simple CLI to manage notes.",
@@ -29,3 +30,4 @@ app.add_typer(init_app)
 app.add_typer(add_app)
 app.add_typer(list_app)
 app.add_typer(delete_app)
+app.add_typer(config_app, name="config")

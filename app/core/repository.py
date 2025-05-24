@@ -3,8 +3,8 @@ Provides high-level operations on the note repository, such as creating the repo
 and adding notes. This module separates core logic from low-level file storage operations.
 """
 from app.core import storage
-from app.core.models import Note, IndexedNote
-from app.core.errors import RepositoryCorruptedError, NotesNotFoundError
+from app.core.models import Note, IndexedNote, Status
+from app.core.errors import RepositoryCorruptedError, NotesNotFoundError, NoteAppError
 from app.core.utils import print_notes, print_tags
 
 def create_repository():
@@ -70,4 +70,45 @@ def delete_note(id: int):
     if not 1 <= id <= notes_number:
         raise NotesNotFoundError(f"There is no note with id {id} in the repository. Run `note list` to see all notes.")
     repository["notes"].pop(id - 1)
+    storage.save_repository(repository)
+
+def create_status(status: Status):
+    repository = storage.load_repository()
+    statuses = repository["config"]["statuses"] # TODO check if key exists
+
+    if status.name in statuses.keys():
+        raise NoteAppError(f"Status {status.name} already exists. Use `note config status -e` to edit statuses.")
+    
+    statuses[status.name] = {
+        "style": status.style,
+        "priority": status.priority
+    }
+    storage.save_repository(repository)
+
+def edit_status(status: Status):
+    repository = storage.load_repository()
+    statuses = repository["config"]["statuses"] # TODO check if key exists
+
+    if status.name not in statuses.keys():
+        raise NoteAppError(f"There is no status {status.name} in the repository configuration. Run `note list -S` to see all statuses.")
+    
+    statuses[status.name] = {
+        "style": status.style,
+        "priority": status.priority
+    }
+
+    # TODO sort notes because priority might have changed
+
+    storage.save_repository(repository)
+
+def delete_status(name: str):
+    repository = storage.load_repository()
+    statuses = repository["config"]["statuses"] # TODO check if key exists
+
+    if name not in statuses.keys():
+        raise NoteAppError(f"There is no status {name} in the repository configuration. Run `note list -S` to see all statuses.")
+    
+    # TODO check whether there are notes with this status, if so ask user what to do or raise an exception
+
+    statuses.pop(name)
     storage.save_repository(repository)
