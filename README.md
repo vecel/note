@@ -12,6 +12,6 @@ pip install notecli
 
 then call the CLI via `note` command:
 
-```
+```bash
 note --help
 ```
