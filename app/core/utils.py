@@ -19,10 +19,10 @@ def parse_tags(tags: str):
 
 def print_notes(notes: list[IndexedNote]):
     table = Table(title="Your Notes")
-    table.add_column("ID", width=4)
-    table.add_column("Content", width=50)
-    table.add_column("Tags", style="violet", width=12)
-    table.add_column("Status", width=12)
+    table.add_column("ID", width=6)
+    table.add_column("Content", width=60)
+    table.add_column("Tags", style="violet", width=16)
+    table.add_column("Status", width=16)
 
     for note in notes:
         idx, content, tags, status = note.idx, note.content, note.tags, note.status
