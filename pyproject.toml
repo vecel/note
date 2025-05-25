@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "notes"
+name = "notecli"
 version = "0.1.0"
 description = "CLI application to create and manage notes."
 authors = ["Mateusz Karandys <mateusz.karandys@gmail.com>"]
