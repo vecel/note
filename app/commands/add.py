@@ -29,18 +29,30 @@ def add(
             help="Tags to be added to the note. Should be a string of comma" \
             " separated values with no white characters between."
         )
+    ] = None,
+    status: Annotated[
+        str | None,
+        typer.Option(
+            "--status",
+            "-s",
+            help="Status to be added to the note. Should be one present in " \
+            "notes config."
+        )
     ] = None
 ):
     """
-    Add a new note with specified CONTENT and optional TAGS.
+    Add a new note with specified CONTENT and optional TAGS and STATUS.
 
     TAGS should be a string of comma separated values associated to the
-    note (e.g. "personal,todo"). 
+    note (e.g. "personal,todo").
+
+    STATUS must be present in repository configuration. Run `note list -S`
+    to see all statuses or `note status --add STATUS` to create a new one.
     """
 
     try:
-        tags_list = parse_tags(tags) if tags is not None else None    
-        note = Note.create(content, tags_list)
+        tags_list = parse_tags(tags) if tags is not None else None
+        note = Note.create(content, tags_list, status)
         add_note(note)
     except NoteAppError as error:
         print(error)

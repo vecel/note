@@ -67,7 +67,7 @@ def status(
     ] = 0
 ):
     """
-    Manage statuses in the application. Use one of --add, --edit or --delete to 
+    Manage statuses in the application. Use one of --add, --edit or --delete to
     add, edit or delete status.
 
     Use this command to create, edit and delete statuses in the appliaction.

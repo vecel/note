@@ -9,9 +9,6 @@ from app.cli import app
 from app.core import REPOSITORY_FILENAME, REPOSITORY_TEMPLATE
 from app.core.models import Note
 
-# FIXME change almost all tests to unit tests without coupling commands with each other
-# TODO create fixtures for creating temporary repository with some content (manually)
-
 @pytest.fixture
 def runner() -> CliRunner:
     """Provides a Typer CliRunner."""
@@ -49,12 +46,16 @@ def repo_with_notes(repo_path):
         Path: A path to repository.
     """
     notes = [
-        Note.create("New note.", ["mytag"]),
+        Note.create("New note.", ["mytag"], "COMPLETED"),
         Note.create("Another note.", ["mytag", "awesome"])
     ]
 
     repo = copy.deepcopy(REPOSITORY_TEMPLATE)
     repo["notes"] = [note.to_dict() for note in notes]
+    repo["config"]["statuses"]["COMPLETED"] = {
+        "style": "green bold",
+        "priority": 2
+    }
 
     with open(repo_path, "w") as file:
         json.dump(repo, file)

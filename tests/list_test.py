@@ -45,7 +45,7 @@ def test_list_tag_filter_no_matching_tag(repo_with_notes, runner, test_app):
     result = runner.invoke(test_app, ["list", "-t", "nonexisting"])
 
     assert result.exit_code == 0
-    assert "There are no notes matching given tag filter in repository." in result.stdout
+    assert "There are no notes matching filter: 'nonexisting' in repository." in result.stdout
 
 def test_list_note_id_with_tag_filter(repo_with_notes, runner, test_app):
     result = runner.invoke(test_app, ["list", "-t", "awesome"], env={"COLUMN": "80"})

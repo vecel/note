@@ -33,3 +33,13 @@ def test_add_repository_not_initialized(tmp_path, runner, test_app):
     assert result.exit_code == 0
     assert f"Notes repository does not exist. Run `note init` to initialize repository." in result.stdout
     
+def test_add_with_status(repo_with_notes, runner, test_app):
+    result = runner.invoke(test_app, ["add", "Note content", "-s", "COMPLETED"])
+
+    assert result.exit_code == 0
+
+def test_add_with_non_existing_status(repo_with_notes, runner, test_app):
+    result = runner.invoke(test_app, ["add", "Note content", "-s", "NONEXISTING"])
+
+    assert result.exit_code == 0
+    assert "There is no status NONEXISTING in the repository configuration. Run `note list -S` to see all statuses or `note status --add STATUS` to add a new one."

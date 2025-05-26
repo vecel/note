@@ -14,7 +14,7 @@ def parse_tags(tags: str):
     if result is None:
         raise NoteAppError("Note was not added because of an error. Tags " \
         "should be comma separated list of strings containing only " \
-        "letters and numbers.") # TODO change to custom exception
+        "letters and numbers.")
     return tags.split(",")
 
 def print_notes(notes: list[IndexedNote]):

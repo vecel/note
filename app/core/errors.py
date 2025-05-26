@@ -18,6 +18,14 @@ class RepositoryCorruptedError(NoteAppError):
     pass
 
 class NotesNotFoundError(NoteAppError):
-    """Raised when no notes are found in the repository, either because it 
-    is empty or no notes match the filter."""
+    """
+    Raised when no notes are found in the repository, either because it 
+    is empty or no notes match the filter.
+    """
+    pass
+
+class StatusDoesNotExistError(NoteAppError):
+    """
+    Raised when a non existing status is being added to the note.
+    """
     pass

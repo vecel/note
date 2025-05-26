@@ -4,7 +4,7 @@ and adding notes. This module separates core logic from low-level file storage o
 """
 from app.core import storage
 from app.core.models import Note, IndexedNote, Status
-from app.core.errors import RepositoryCorruptedError, NotesNotFoundError, NoteAppError
+from app.core.errors import RepositoryCorruptedError, NotesNotFoundError, NoteAppError, StatusDoesNotExistError
 from app.core.utils import print_notes, print_tags
 
 def create_repository():
@@ -35,6 +35,10 @@ def add_note(note: Note):
     
     if "notes" not in repository.keys():
         raise RepositoryCorruptedError("Notes repository does not contain field 'notes'.")
+    
+    statuses = repository["config"]["statuses"]
+    if note.status and note.status not in statuses.keys():
+        raise StatusDoesNotExistError(f"There is no status {note.status} in the repository configuration. Run `note list -S` to see all statuses or `note status --add STATUS` to add a new one.")
 
     repository["notes"].append(note.to_dict())
     storage.save_repository(repository)
@@ -43,16 +47,17 @@ def list_notes(tag_filter: list[str] | None = None):
     repository = storage.load_repository()
     notes_list = repository["notes"]
 
-    if not notes_list:
-        raise NotesNotFoundError("Repository is empty. Run `note add` to add a note.")
-    
     notes = [IndexedNote(idx=idx, **note) for idx, note in enumerate(notes_list)]
+
+    if not notes:
+        raise NotesNotFoundError("Repository is empty. Run `note add` to add a note.")
     
     if tag_filter is not None:
         notes = [note for note in notes if note.tags and set(note.tags) & set(tag_filter)]
-    if not notes:
-        # TODO add filter to print statement
-        raise NotesNotFoundError("There are no notes matching given tag filter in repository.")
+        if not notes:
+            filter_msg = ", ".join(tag_filter)
+            raise NotesNotFoundError(f"There are no notes matching filter: '{filter_msg}' in repository.")
+    
     print_notes(notes)
 
 def list_tags():
@@ -90,7 +95,7 @@ def edit_status(status: Status):
     statuses = repository["config"]["statuses"] # TODO check if key exists
 
     if status.name not in statuses.keys():
-        raise NoteAppError(f"There is no status {status.name} in the repository configuration. Run `note list -S` to see all statuses.")
+        raise StatusDoesNotExistError(f"There is no status {status.name} in the repository configuration. Run `note list -S` to see all statuses or `note status --add STATUS` to add a new one.")
     
     statuses[status.name] = {
         "style": status.style,
@@ -106,7 +111,7 @@ def delete_status(name: str):
     statuses = repository["config"]["statuses"] # TODO check if key exists
 
     if name not in statuses.keys():
-        raise NoteAppError(f"There is no status {name} in the repository configuration. Run `note list -S` to see all statuses.")
+        raise StatusDoesNotExistError(f"There is no status {name} in the repository configuration. Run `note list -S` to see all statuses or `note status --add STATUS` to add a new one.")
     
     # TODO check whether there are notes with this status, if so ask user what to do or raise an exception
 
