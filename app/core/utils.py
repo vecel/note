@@ -5,9 +5,9 @@ from rich.table import Table
 from rich.text import Text
 
 from app.core.errors import NoteAppError
-from app.core.models import IndexedNote
+from app.core.models import NoteWithStatus
 
-DASH_TEXT = Text("-", style="italic black")
+NO_TEXT = Text("-", style="italic black")
 
 def parse_tags(tags: str):
     result = re.match("^[a-zA-Z0-9]+(,[a-zA-Z0-9]+)*$", tags)
@@ -17,18 +17,18 @@ def parse_tags(tags: str):
         "letters and numbers.")
     return tags.split(",")
 
-def print_notes(notes: list[IndexedNote]):
+def print_notes(notes: list[NoteWithStatus]):
     table = Table(title="Your Notes")
     table.add_column("ID", width=6)
     table.add_column("Content", width=50)
-    table.add_column("Tags", style="violet", width=16)
     table.add_column("Status", width=16)
+    table.add_column("Tags", style="violet", width=16)
 
-    for note in notes:
-        idx, content, tags, status = note.idx, note.content, note.tags, note.status
-        tags = " ".join(f"#{tag}" for tag in tags) if tags is not None else DASH_TEXT
-        status = Text(status, style="green bold") if status is not None else DASH_TEXT
-        table.add_row(str(idx + 1), content, tags, status)
+    for note_with_status in notes:
+        idx, note, status = note_with_status.idx, note_with_status.note, note_with_status.status
+        tags = " ".join(f"#{tag}" for tag in note.tags) if note.tags else NO_TEXT
+        status = Text(note.status, status.style) if note.status else NO_TEXT
+        table.add_row(str(idx + 1), note.content, status, tags)
     
     print(table)
 

@@ -14,16 +14,17 @@ class Note:
         return asdict(self)
 
 @dataclass
-class IndexedNote(Note):
-    idx: int
-
-@dataclass
 class Status:
-    name: str
     style: str
     priority: int
 
     @staticmethod
-    def create(name: str, style: str | None, priority: int):
-        style = style if style is not None else "white"
-        return Status(name, style, priority)
+    def create(style: str | None = None, priority: int = 0):
+        style = style if style else "white"
+        return Status(style, priority)
+
+@dataclass
+class NoteWithStatus:
+    idx: int
+    note: Note
+    status: Status

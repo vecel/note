@@ -91,11 +91,11 @@ def status(
     
     try:
         if add:
-            status = Status.create(add, style, priority)
-            create_status(status)
+            status = Status.create(style, priority)
+            create_status(add, status)
         if edit:
-            status = Status.create(edit, style, priority)
-            edit_status(status)
+            status = Status.create(style, priority)
+            edit_status(edit, status)
         if delete:
             delete_status(delete)
     except NoteAppError as error:
