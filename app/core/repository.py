@@ -30,22 +30,21 @@ def add_note(note: Note):
     Raises:
         RepositoryCorruptedError: If the loaded repository does not contain a 'notes' field,
                                   indicating it is improperly structured or corrupted.
+        StatusDoesNotExistErrorl: If note is being created with non-existing status.
     """
     repository = storage.load_repository()
+    notes = _get_notes(repository)
+    statuses = _get_statuses(repository)
     
-    if "notes" not in repository.keys():
-        raise RepositoryCorruptedError("Notes repository does not contain field 'notes'.")
-    
-    statuses = repository["config"]["statuses"]
     if note.status and note.status not in statuses.keys():
         raise StatusDoesNotExistError(f"There is no status {note.status} in the repository configuration. Run `note list -S` to see all statuses or `note status --add STATUS` to add a new one.")
 
-    repository["notes"].append(note.to_dict())
+    notes.append(note.to_dict())
     storage.save_repository(repository)
 
 def list_notes(tag_filter: list[str] | None = None):
     repository = storage.load_repository()
-    notes_list = repository["notes"]
+    notes_list = _get_notes(repository)
 
     notes = [IndexedNote(idx=idx, **note) for idx, note in enumerate(notes_list)]
 
@@ -62,8 +61,8 @@ def list_notes(tag_filter: list[str] | None = None):
 
 def list_tags():
     repository = storage.load_repository()
-    notes_list = repository["notes"]
-    tags = [note["tags"] for note in notes_list if note["tags"]]
+    notes = _get_notes(repository)
+    tags = [note["tags"] for note in notes if note["tags"]]
     tags = [tag for group in tags for tag in group]
     if not tags:
         raise NotesNotFoundError("There are no tagged notes in the repository.")
@@ -71,15 +70,15 @@ def list_tags():
 
 def delete_note(id: int):
     repository = storage.load_repository()
-    notes_number = len(repository["notes"])
-    if not 1 <= id <= notes_number:
+    notes = _get_notes(repository)
+    if not 1 <= id <= len(notes):
         raise NotesNotFoundError(f"There is no note with id {id} in the repository. Run `note list` to see all notes.")
-    repository["notes"].pop(id - 1)
+    notes.pop(id - 1)
     storage.save_repository(repository)
 
 def create_status(status: Status):
     repository = storage.load_repository()
-    statuses = repository["config"]["statuses"] # TODO check if key exists
+    statuses = _get_statuses(repository)
 
     if status.name in statuses.keys():
         raise NoteAppError(f"Status {status.name} already exists. Use `note config status -e` to edit statuses.")
@@ -92,7 +91,7 @@ def create_status(status: Status):
 
 def edit_status(status: Status):
     repository = storage.load_repository()
-    statuses = repository["config"]["statuses"] # TODO check if key exists
+    statuses = _get_statuses(repository)
 
     if status.name not in statuses.keys():
         raise StatusDoesNotExistError(f"There is no status {status.name} in the repository configuration. Run `note list -S` to see all statuses or `note status --add STATUS` to add a new one.")
@@ -108,7 +107,7 @@ def edit_status(status: Status):
 
 def delete_status(name: str):
     repository = storage.load_repository()
-    statuses = repository["config"]["statuses"] # TODO check if key exists
+    statuses = _get_statuses(repository)
 
     if name not in statuses.keys():
         raise StatusDoesNotExistError(f"There is no status {name} in the repository configuration. Run `note list -S` to see all statuses or `note status --add STATUS` to add a new one.")
@@ -117,3 +116,17 @@ def delete_status(name: str):
 
     statuses.pop(name)
     storage.save_repository(repository)
+
+def _get_notes(repository: dict):
+    if "notes" not in repository.keys():
+        raise RepositoryCorruptedError("Notes repository does not contain field 'notes'.")
+    return repository["notes"]
+
+def _get_statuses(repository: dict):
+    if "config" not in repository.keys():
+        raise RepositoryCorruptedError("Notes repository does not contain field 'config'.")
+    
+    if "statuses" not in repository["config"].keys():
+        raise RepositoryCorruptedError("Notes repository configuration does not contain field 'statuses'.")
+    
+    return repository["config"]["statuses"]
