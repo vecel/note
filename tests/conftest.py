@@ -46,15 +46,19 @@ def repo_with_notes(repo_path):
         Path: A path to repository.
     """
     notes = [
-        Note.create("New note.", ["mytag"], "COMPLETED"),
-        Note.create("Another note.", ["mytag", "awesome"])
+        Note.create("New note.", ["mytag"]),
+        Note.create("Another note.", ["mytag", "awesome"], "COMPLETED")
     ]
 
     repo = copy.deepcopy(REPOSITORY_TEMPLATE)
     repo["notes"] = [note.to_dict() for note in notes]
     repo["config"]["statuses"]["COMPLETED"] = {
         "style": "green bold",
-        "priority": 2
+        "priority": -2
+    }
+    repo["config"]["statuses"]["PRIORITY"] = {
+        "style": "red",
+        "priority": 10
     }
 
     with open(repo_path, "w") as file:

@@ -42,4 +42,28 @@ def test_add_with_non_existing_status(repo_with_notes, runner, test_app):
     result = runner.invoke(test_app, ["add", "Note content", "-s", "NONEXISTING"])
 
     assert result.exit_code == 0
-    assert "There is no status NONEXISTING in the repository configuration. Run `note list -S` to see all statuses or `note status --add STATUS` to add a new one."
+    assert "There is no status NONEXISTING in the repository configuration. Run `note list -S` to see all statuses or `note status --add STATUS` to add a new one." in result.stdout
+
+def test_add_notes_sorted_after_addition(repo_with_notes, runner, test_app):
+    result = runner.invoke(test_app, ["add", "Yet another note."])
+    
+    with open(repo_with_notes, "r") as file:
+        repository = json.load(file)
+
+    assert result.exit_code == 0
+    assert len(repository["notes"]) == 3
+    assert repository["notes"][0]["content"] == "New note."
+    assert repository["notes"][1]["content"] == "Yet another note."
+    assert repository["notes"][2]["content"] == "Another note."
+
+def test_add_notes_sorted_after_addition_with_status(repo_with_notes, runner, test_app):
+    result = runner.invoke(test_app, ["add", "Yet another note.", "-s", "PRIORITY"])
+    
+    with open(repo_with_notes, "r") as file:
+        repository = json.load(file)
+
+    assert result.exit_code == 0
+    assert len(repository["notes"]) == 3
+    assert repository["notes"][0]["content"] == "Yet another note."
+    assert repository["notes"][1]["content"] == "New note."
+    assert repository["notes"][2]["content"] == "Another note."

@@ -66,4 +66,7 @@ def save_repository(notes_repository: dict):
     with repository.open("w") as file:
         json.dump(notes_repository, file)
 
+def repository_exists():
+    return repository.exists()
+
 # TODO Consider using with clause to work with load/save repository

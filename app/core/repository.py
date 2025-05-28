@@ -41,8 +41,7 @@ def add_note(note: Note):
 
     notes.append(note.to_dict())
 
-    # TODO sort notes by status.priority
-    notes.sort(key=lambda note_dict: 0 if note_dict["status"] is None else statuses[note_dict["status"]]["priority"])
+    _sort_notes(repository)
 
     storage.save_repository(repository)
 
@@ -103,7 +102,7 @@ def edit_status(name: str, status: Status):
         "priority": status.priority
     }
 
-    # TODO sort notes because priority might have changed
+    _sort_notes(repository)
 
     storage.save_repository(repository)
 
@@ -138,3 +137,9 @@ def _get_notes_with_statuses(repository: dict):
     statuses = _get_statuses(repository)
 
     return [NoteWithStatus(idx, Note(**note), Status(**statuses[note["status"]]) if note["status"] else Status.create()) for idx, note in enumerate(notes)]
+
+def _sort_notes(repository: dict):
+    notes = _get_notes(repository)
+    statuses = _get_statuses(repository)
+
+    notes.sort(key=lambda note_dict: 0 if note_dict["status"] is None else statuses[note_dict["status"]]["priority"], reverse=True)
