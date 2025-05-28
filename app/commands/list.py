@@ -9,7 +9,7 @@ import typer
 from typing_extensions import Annotated
 
 from app.core.errors import NoteAppError
-from app.core.repository import list_notes, list_tags
+from app.core.repository import list_notes, list_tags, list_statuses
 
 app = typer.Typer()
 
@@ -31,6 +31,14 @@ def list(
             "-T",
             help="List all tags present in notes repository."
         )
+    ] = False,
+    statuses_only: Annotated[
+        bool,
+        typer.Option(
+            "--statuses-only",
+            "-S",
+            help="List all statuses present in repository configuration."
+        )
     ] = False
 ):
     """
@@ -40,10 +48,18 @@ def list(
     to filter notes by one or more tags. Only notes that have at least one of the 
     specified tags will be shown.
     """
+    
+    options_only = [tags_only, statuses_only]
+    if tag_filter and any(options_only):
+        print("You must not use -T nor -S options with tag filter -t.") # TODO add test for that
+        raise typer.Exit()
+    
     try:
-        if not tags_only:
+        if not any(options_only):
             list_notes(tag_filter)
-        else:
+        if tags_only:
             list_tags()
+        if statuses_only:
+            list_statuses()
     except NoteAppError as error:
         print(error)

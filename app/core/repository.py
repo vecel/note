@@ -5,7 +5,7 @@ and adding notes. This module separates core logic from low-level file storage o
 from app.core import storage
 from app.core.models import Note, Status, NoteWithStatus
 from app.core.errors import RepositoryCorruptedError, NotesNotFoundError, NoteAppError, StatusDoesNotExistError
-from app.core.utils import print_notes, print_tags
+from app.core.utils import print_notes, print_tags, print_statuses
 
 def create_repository():
     """
@@ -68,6 +68,14 @@ def list_tags():
     if not tags:
         raise NotesNotFoundError("There are no tagged notes in the repository.")
     print_tags(tags)
+
+def list_statuses():
+    repository = storage.load_repository()
+    statuses = _get_statuses(repository)
+    statuses = [(name, Status.create(**status)) for name, status in statuses.items()]
+    if not statuses:
+        raise NoteAppError("There are no statuses in repository configuration. Run `note status --add` to create one.") # TODO test for that
+    print_statuses(statuses)
 
 def delete_note(id: int):
     repository = storage.load_repository()

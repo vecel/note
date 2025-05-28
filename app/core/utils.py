@@ -5,7 +5,7 @@ from rich.table import Table
 from rich.text import Text
 
 from app.core.errors import NoteAppError
-from app.core.models import NoteWithStatus
+from app.core.models import NoteWithStatus, Status
 
 NO_TEXT = Text("-", style="italic black")
 
@@ -33,6 +33,11 @@ def print_notes(notes: list[NoteWithStatus]):
     print(table)
 
 def print_tags(tags: list[str]):
-    tags_list = " ".join(f"#{tag}" for tag in tags)
+    tags_list = " ".join(f"#{tag}" for tag in set(tags))
     tags_list = Text(tags_list, style="bold violet")
     print(tags_list)
+
+def print_statuses(statuses: list[tuple[str, Status]]):
+    for name, status in statuses:
+        styled_status = Text(name, status.style)
+        print(styled_status, " priority: ", status.priority)

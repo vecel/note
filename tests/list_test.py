@@ -26,7 +26,8 @@ def test_list_tags(repo_with_notes, runner, test_app):
     result = runner.invoke(test_app, ["list", "-T"])
 
     assert result.exit_code == 0
-    assert "#mytag #awesome" in result.stdout
+    assert "#mytag" in result.stdout
+    assert "#awesome" in result.stdout
 
 def test_list_no_tags(repo_with_untagged_notes, runner, test_app):
     result = runner.invoke(test_app, ["list", "-T"])
@@ -53,3 +54,9 @@ def test_list_note_id_with_tag_filter(repo_with_notes, runner, test_app):
     assert result.exit_code == 0
     assert "1" not in result.stdout
     assert "2" in result.stdout
+
+def test_list_tags_displayed_only_once_with_tags_only(repo_with_notes, runner, test_app):
+    result = runner.invoke(test_app, ["list", "-T"])
+
+    assert result.exit_code == 0
+    assert result.stdout.count("#mytag") == 1
