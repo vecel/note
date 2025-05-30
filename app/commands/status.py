@@ -58,13 +58,13 @@ def status(
         )
     ] = None,
     priority: Annotated[
-        int,
+        int | None,
         typer.Option(
             "--priority",
             "-p",
             help="Provide status' priority."
         )
-    ] = 0
+    ] = None
 ):
     """
     Manage statuses in the application. Use one of --add, --edit or --delete to
@@ -94,13 +94,8 @@ def status(
             status = Status.create(style, priority)
             create_status(add, status)
         if edit:
-            status = Status.create(style, priority)
-            edit_status(edit, status)
+            edit_status(edit, style, priority)
         if delete:
             delete_status(delete)
     except NoteAppError as error:
         print(error)
-    
-
-    # TODO add check for key "config", "status" in repo in test_init
-    # TODO ensure there is a status when adding a note with status (in add command)

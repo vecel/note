@@ -19,8 +19,9 @@ class Status:
     priority: int
 
     @staticmethod
-    def create(style: str | None = None, priority: int = 0):
+    def create(style: str | None = None, priority: int | None = None):
         style = style if style else "white"
+        priority = priority if priority else 0
         return Status(style, priority)
 
 @dataclass

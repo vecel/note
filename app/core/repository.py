@@ -120,14 +120,15 @@ class Repository:
             "priority": status.priority
         } 
     
-    def edit_status(self, name: str, status: Status):
+    def edit_status(self, name: str, style: str | None, priority: int | None):
         if name not in self._statuses.keys():
             raise StatusDoesNotExistError(f"There is no status {name} in the repository configuration. Run `note list -S` to see all statuses or `note status --add STATUS` to add a new one.")
-        
-        self._statuses[name] = {
-            "style": status.style,
-            "priority": status.priority
-        }
+
+        if style:
+            self._statuses[name]["style"] = style
+
+        if priority:
+            self._statuses[name]["priority"] = priority
 
         self._notes.sort(key=self._notes_sorter)
 
@@ -166,9 +167,9 @@ def create_status(name: str, status: Status):
     with Repository() as repo:
         repo.create_status(name, status)
 
-def edit_status(name: str, status: Status):
+def edit_status(name: str, style: str | None, priority: int | None):
     with Repository() as repo:
-        repo.edit_status(name, status)
+        repo.edit_status(name, style, priority)
 
 def delete_status(name: str):
     with Repository() as repo:
