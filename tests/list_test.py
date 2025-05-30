@@ -20,7 +20,7 @@ def test_list_repository_not_initialized(tmp_path, runner, test_app):
     result = runner.invoke(test_app, ["list"])
 
     assert result.exit_code == 0
-    assert f"Notes repository does not exist. Run `note init` to initialize repository." in result.stdout
+    assert "Notes repository does not exist. Run `note init` to initialize repository." in result.stdout
 
 def test_list_tags(repo_with_notes, runner, test_app):
     result = runner.invoke(test_app, ["list", "-T"])
@@ -60,3 +60,10 @@ def test_list_tags_displayed_only_once_with_tags_only(repo_with_notes, runner, t
 
     assert result.exit_code == 0
     assert result.stdout.count("#mytag") == 1
+
+def test_list_statuses_only(repo_with_notes, runner, test_app):
+    result = runner.invoke(test_app, ["list", "-S"])
+
+    assert result.exit_code == 0
+    assert "COMPLETED  priority:  -2" in result.stdout
+    assert "PRIORITY  priority:  10" in result.stdout
