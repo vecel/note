@@ -4,6 +4,8 @@ and adding notes. This module separates core logic from low-level file storage o
 """
 from copy import deepcopy
 
+import typer
+
 from app.core import storage
 from app.core.models import Note, Status, NoteWithStatus
 from app.core.errors import RepositoryCorruptedError, NotesNotFoundError, NoteAppError, StatusDoesNotExistError
@@ -135,10 +137,23 @@ class Repository:
     def delete_status(self, name: str):
         if name not in self._statuses.keys():
             raise StatusDoesNotExistError(f"There is no status {name} in the repository configuration. Run `note list -S` to see all statuses or `note status --add STATUS` to add a new one.")
-        # TODO check whether there are notes with this status, if so ask user what to do or raise an exception
+        
+        notes_with_status = [note for note in self._notes if note["status"] == name]
+
+        if notes_with_status:
+            confirmation = typer.confirm(f"There exist a note with status {name}, would you like to proceed? Note's status will be removed.")
+            if not confirmation:
+                return
+            for note in notes_with_status:
+                note["status"] = None
+            self._notes.sort(key=self._notes_sorter)
+        
         self._statuses.pop(name)
-
-
+        # TODO add tests:
+        # status deleted
+        # ask for confirmation when note has status
+        # status not deleted after No respond
+        # notes sorted after removing status
 
 def create_repository():
     return Repository.init_repository()
