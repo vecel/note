@@ -119,3 +119,12 @@ I'm working on:
 1. `edit` command to easily edit notes, change their content, remove or add tags and statuses.
 2. `purge` or `destroy` command to remove repository.
 3. `list -s status` option to list notes with given status.
+
+### Changelog
+
+#### 0.1.1 June 12, 2025
+- Added `status` command instead of `config status`.
+- Added `list -S` option.
+
+#### 0.1.0 May 25, 2025
+- Initial application version published on PyPI.
