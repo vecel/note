@@ -101,7 +101,7 @@ When you run `note list` you should see following output:
 ```
 
 >
-> **Attention:** As you can see COMPLETED status is white here, it is because of markdown styling. You should see it as bold, green text. Tags should be violet in your console. 
+> **Note:** As you can see COMPLETED status is white here, it is because of markdown styling. You should see it as bold, green text. Tags should be violet in your console. 
 >
 
 You can also list notes with tag filter by specyfing `note list -t tag`. `list` command allows you to list all tags or statuses in your repository. To do so, run `note list -T` for tags and `note list -S` for statuses.
