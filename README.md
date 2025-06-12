@@ -7,10 +7,10 @@ The `notecli` application is a tool to manage notes, ideas and thoughts related 
 
 ## Installation
 
-To install the application run:
+To install the application first install `pipx`. Follow the link to see the instruction https://pipx.pypa.io/stable/installation/. Then run:
 
 ```bash
-pip install notecli
+pipx install notecli
 ```
 
 Then call the CLI via `note` command:
