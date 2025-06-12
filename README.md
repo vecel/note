@@ -89,7 +89,7 @@ note add "Hello status!" -s COMPLETED
 
 When you run `note list` you should see following output:
 
-```bash
+```
                                     Your Notes                                              
 ┏━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━┓
 ┃ ID     ┃ Content                          ┃ Status           ┃ Tags             ┃
@@ -103,3 +103,19 @@ When you run `note list` you should see following output:
 >
 > **Attention:** As you can see COMPLETED status is white here, it is because of markdown styling. You should see it as bold, green text. Tags should be violet in your console. 
 >
+
+You can also list notes with tag filter by specyfing `note list -t tag`. `list` command allows you to list all tags or statuses in your repository. To do so, run `note list -T` for tags and `note list -S` for statuses.
+
+You can delete note by specifying its id. Run:
+
+```bash
+note delete 3
+```
+
+It will delete "Hello tags!" note from the example above. Remember to check note's id before deleting it (by using `note list`) - it might change when you add a note with higher priority, edit status priority, delete status or in some other cases.
+
+## Future plans
+I'm working on:
+1. `edit` command to easily edit notes, change their content, remove or add tags and statuses.
+2. `purge` or `destroy` command to remove repository.
+3. `list -s status` option to list notes with given status.
