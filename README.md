@@ -120,7 +120,7 @@ I'm working on:
 2. `purge` or `destroy` command to remove repository.
 3. `list -s status` option to list notes with given status.
 
-### Changelog
+## Changelog
 
 #### 0.1.1 June 12, 2025
 - Added `status` command instead of `config status`.
